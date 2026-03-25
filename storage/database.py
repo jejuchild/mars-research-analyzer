@@ -8,11 +8,17 @@ from typing import Optional
 
 from config import DB_PATH, RELEVANCE_KEYWORDS
 
+# Pre-compile word-boundary regex for each keyword
+_RELEVANCE_PATTERNS = [
+    re.compile(r'\b' + re.escape(kw) + r'\b', re.IGNORECASE)
+    for kw in RELEVANCE_KEYWORDS
+]
+
 
 def _is_relevant(title: str, abstract: str) -> bool:
-    """Check if a paper is relevant to Mars research."""
-    text = f"{title} {abstract}".lower()
-    return any(kw in text for kw in RELEVANCE_KEYWORDS)
+    """Check if a paper is relevant to Mars research (word-boundary matching)."""
+    text = f"{title} {abstract}"
+    return any(pat.search(text) for pat in _RELEVANCE_PATTERNS)
 
 
 class PaperDB:
