@@ -29,50 +29,57 @@ CONTACT_EMAIL = "research@snu.ac.kr"
 NASA_ADS_API_KEY = os.environ.get("NASA_ADS_API_KEY", "")
 SEMANTIC_SCHOLAR_API_KEY = os.environ.get("S2_API_KEY", "")
 
-# Search keywords by field
+# Search keywords by field — focused on Mars-specific terms
 KEYWORDS = {
     "planetary_science": [
-        "Mars exploration",
-        "Mars rover",
-        "Mars surface",
-        "Martian atmosphere",
-        "Mars geology",
-        "Mars mineralogy",
-        "Mars water",
+        "Mars subsurface ice detection",
+        "Martian surface geology",
+        "Martian periglacial landforms",
+        "Mars thermal inertia",
+        "Arcadia Planitia",
+        "Mars water ice",
         "Mars habitability",
+        "Jezero crater Mars",
     ],
     "satellite": [
-        "Mars orbiter",
+        "Mars remote sensing",
+        "CRISM mineral classification Mars",
+        "HiRISE Mars terrain",
+        "SHARAD radar Mars",
+        "Mars SAR synthetic aperture radar",
         "Mars reconnaissance orbiter",
-        "satellite remote sensing Mars",
-        "Mars spacecraft",
-        "Mars mission",
-        "Mars Express",
-        "MAVEN Mars",
-        "Tianwen Mars",
+        "THEMIS Mars",
+        "MOLA Mars topography",
     ],
     "computer_science": [
-        "machine learning Mars",
-        "deep learning planetary",
-        "autonomous navigation Mars",
+        "machine learning Mars surface",
+        "deep learning Mars crater",
+        "Mars terrain classification neural network",
+        "Mars image segmentation",
+        "autonomous navigation Mars rover",
         "computer vision Mars",
-        "AI space exploration",
-        "neural network crater",
-        "image classification Mars",
-        "terrain analysis Mars",
+        "Mars spectral analysis machine learning",
+        "crater detection deep learning",
     ],
 }
 
 # Combined search queries (cross-field)
 CROSS_FIELD_QUERIES = [
-    "Mars machine learning remote sensing",
+    "CRISM machine learning mineral classification",
+    "HiRISE deep learning terrain",
     "Mars rover autonomous navigation AI",
     "Mars surface classification deep learning",
-    "crater detection neural network",
-    "Mars spectral analysis machine learning",
-    "planetary data science Mars",
-    "Mars image segmentation",
-    "Mars terrain mapping computer vision",
+    "SHARAD subsurface radar machine learning",
+    "Mars spectral unmixing neural network",
+    "Mars thermal inertia remote sensing mapping",
+    "Perseverance rover image analysis",
+]
+
+# Relevance filter — paper must mention at least one of these in title or abstract
+RELEVANCE_KEYWORDS = [
+    "mars", "martian", "perseverance", "curiosity rover", "ingenuity",
+    "jezero", "arcadia planitia", "crism", "hirise", "sharad", "mola",
+    "themis", "mons", "maven", "insight lander",
 ]
 
 # Rate limits are now managed per-collector with exponential backoff.
