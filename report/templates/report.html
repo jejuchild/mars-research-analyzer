@@ -118,6 +118,109 @@ footer {
     border-top: 1px solid #d8dee6;
     margin-top: 40px;
 }
+/* Paper detail modal */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+.modal-overlay.active { display: flex; }
+.modal-content {
+    background: #ffffff;
+    border-radius: 16px;
+    max-width: 800px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 30px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    position: relative;
+}
+.modal-close {
+    position: absolute;
+    top: 15px; right: 20px;
+    font-size: 1.5em;
+    cursor: pointer;
+    color: #8899aa;
+    background: none;
+    border: none;
+    line-height: 1;
+}
+.modal-close:hover { color: #2c3e50; }
+.modal-title {
+    font-size: 1.3em;
+    font-weight: 700;
+    color: #1e3a5f;
+    margin-bottom: 12px;
+    padding-right: 40px;
+}
+.modal-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 18px;
+    font-size: 0.9em;
+    color: #5a6a7e;
+}
+.modal-meta span {
+    background: #f0f4f8;
+    padding: 3px 10px;
+    border-radius: 6px;
+}
+.modal-abstract {
+    line-height: 1.8;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f8f9fb;
+    border-radius: 8px;
+    border-left: 4px solid #2a5298;
+}
+.modal-abstract-label {
+    font-weight: 600;
+    color: #1e3a5f;
+    margin-bottom: 8px;
+}
+.modal-links {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.modal-links a {
+    display: inline-block;
+    padding: 8px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9em;
+}
+.btn-doi {
+    background: #2a5298;
+    color: white;
+}
+.btn-doi:hover { background: #1e3a5f; }
+.btn-snu {
+    background: #2e7d32;
+    color: white;
+}
+.btn-snu:hover { background: #1b5e20; }
+.btn-scholar {
+    background: #d35400;
+    color: white;
+}
+.btn-scholar:hover { background: #a04000; }
+/* Clickable paper titles */
+.paper-link {
+    color: #2a5298;
+    cursor: pointer;
+    text-decoration: none;
+    border-bottom: 1px dashed #2a5298;
+}
+.paper-link:hover { color: #1e3a5f; border-bottom-style: solid; }
 </style>
 </head>
 <body>
@@ -278,7 +381,7 @@ footer {
         <tr><th>Title</th><th>Year</th><th>Citations</th><th>Venue</th></tr>
         {% for p in crossfield.triple_intersection_papers[:15] %}
         <tr>
-            <td>{{ p.title }}</td>
+            <td><span class="paper-link" onclick="showPaper({{ p | tojson_pretty }})">{{ p.title }}</span></td>
             <td>{{ p.year }}</td>
             <td>{{ p.citations }}</td>
             <td>{{ p.venue }}</td>
@@ -293,7 +396,7 @@ footer {
         <tr><th>Title</th><th>Year</th><th>Fields</th><th>Citations</th></tr>
         {% for p in crossfield.top_crossfield_papers[:15] %}
         <tr>
-            <td>{{ p.title }}</td>
+            <td><span class="paper-link" onclick="showPaper({{ p | tojson_pretty }})">{{ p.title }}</span></td>
             <td>{{ p.year }}</td>
             <td>
                 {% for f in p.fields %}
@@ -333,7 +436,7 @@ footer {
     <h3 style="margin-top: 25px;">{{ gap_type | replace('_', ' ') | title }}</h3>
     {% for inst in instances[:5] %}
     <div class="gap-card gap-type-{{ gap_type }}">
-        <strong>{{ inst.paper_title }}</strong>
+        <strong><span class="paper-link" onclick="showPaper({title: '{{ inst.paper_title | e }}', doi: '{{ inst.doi | e }}', year: {{ inst.year or 'null' }}, citations: {{ inst.citations or 0 }}, venue: '', abstract: {{ inst.abstract | default('', true) | tojson_pretty }}, fields: []})">{{ inst.paper_title }}</span></strong>
         <div class="context">"{{ inst.context }}"</div>
         <div class="meta">Year: {{ inst.year }} | Citations: {{ inst.citations }} | DOI: {{ inst.doi }}</div>
     </div>
@@ -385,8 +488,69 @@ footer {
 
 </div>
 
-<!-- Charts Script -->
+<!-- Paper Detail Modal -->
+<div class="modal-overlay" id="paperModal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+        <div class="modal-title" id="modalTitle"></div>
+        <div class="modal-meta" id="modalMeta"></div>
+        <div id="modalAbstract"></div>
+        <div class="modal-links" id="modalLinks"></div>
+    </div>
+</div>
+
+<!-- Modal + Charts Script -->
 <script>
+// Paper modal functions (outside DOMContentLoaded so onclick can access them)
+function showPaper(paper) {
+    document.getElementById('modalTitle').textContent = paper.title || '';
+
+    var meta = document.getElementById('modalMeta');
+    meta.innerHTML = '';
+    if (paper.year) meta.innerHTML += '<span>Year: ' + paper.year + '</span>';
+    if (paper.citations) meta.innerHTML += '<span>Citations: ' + paper.citations + '</span>';
+    if (paper.venue) meta.innerHTML += '<span>' + paper.venue + '</span>';
+    if (paper.fields && paper.fields.length) {
+        paper.fields.forEach(function(f) {
+            var cls = f === 'planetary_science' ? 'planetary' : f === 'satellite' ? 'satellite' : f === 'computer_science' ? 'cs' : 'cross';
+            meta.innerHTML += '<span class="tag ' + cls + '">' + f + '</span>';
+        });
+    }
+
+    var absDiv = document.getElementById('modalAbstract');
+    if (paper.abstract && paper.abstract.length > 10) {
+        absDiv.innerHTML = '<div class="modal-abstract-label">Abstract</div><div class="modal-abstract">' + paper.abstract + '</div>';
+    } else {
+        absDiv.innerHTML = '<div class="modal-abstract" style="color:#8899aa;">No abstract available.</div>';
+    }
+
+    var links = document.getElementById('modalLinks');
+    links.innerHTML = '';
+    if (paper.doi) {
+        links.innerHTML += '<a class="btn-doi" href="https://doi.org/' + paper.doi + '" target="_blank">DOI Original</a>';
+        links.innerHTML += '<a class="btn-snu" href="https://libproxy.snu.ac.kr/link.n2s?url=https://doi.org/' + paper.doi + '" target="_blank">SNU Proxy</a>';
+    }
+    if (paper.title) {
+        links.innerHTML += '<a class="btn-scholar" href="https://scholar.google.com/scholar?q=' + encodeURIComponent(paper.title) + '" target="_blank">Google Scholar</a>';
+    }
+
+    document.getElementById('paperModal').classList.add('active');
+}
+
+function closeModal() {
+    document.getElementById('paperModal').classList.remove('active');
+}
+
+// Close on overlay click
+document.getElementById('paperModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+});
+
+// Close on Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeModal();
+});
+
 document.addEventListener('DOMContentLoaded', function() {
 
 // Yearly papers chart

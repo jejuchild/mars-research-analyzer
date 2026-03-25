@@ -151,6 +151,7 @@ def analyze_crossfield(papers: list[dict]) -> dict:
                 "citations": paper.get("citation_count", 0),
                 "doi": paper.get("doi", ""),
                 "venue": paper.get("venue", ""),
+                "abstract": paper.get("abstract", ""),
             })
             combo = tuple(sorted(fields))
             field_combos[combo] += 1

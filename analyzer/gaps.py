@@ -100,6 +100,7 @@ def detect_gaps(papers: list[dict]) -> dict:
                     "context": context,
                     "citations": paper.get("citation_count", 0),
                     "doi": paper.get("doi", ""),
+                    "abstract": abstract,
                 })
 
         if paper_has_gap:
