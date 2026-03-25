@@ -7,17 +7,76 @@ from collections import Counter, defaultdict
 
 logger = logging.getLogger(__name__)
 
-# Field detection keywords (used to tag papers that weren't pre-tagged)
+# Venue-based field classification (priority over keyword-based)
+VENUE_FIELDS = {
+    "planetary_science": [
+        "journal of geophysical research planets",
+        "journal of geophysical research: planets",
+        "icarus",
+        "the planetary science journal",
+        "planetary science journal",
+        "astrobiology",
+        "earth and planetary science letters",
+        "geophysical research letters",
+        "meteoritics and planetary science",
+        "meteoritics & planetary science",
+        "the astrophysical journal",
+        "astrophysical journal",
+        "astronomy & astrophysics",
+        "astronomy and astrophysics",
+        "planetary and space science",
+        "journal of geophysical research space physics",
+        "space science reviews",
+        "nature geoscience",
+        "nature astronomy",
+    ],
+    "satellite": [
+        "ieee transactions on geoscience and remote sensing",
+        "remote sensing",
+        "remote sensing of environment",
+        "international journal of remote sensing",
+        "isprs journal of photogrammetry and remote sensing",
+        "acta astronautica",
+        "journal of spacecraft and rockets",
+        "ieee geoscience and remote sensing letters",
+        "advances in space research",
+        "journal of applied remote sensing",
+        "giscience & remote sensing",
+        "sensors",
+    ],
+    "computer_science": [
+        "ieee transactions on pattern analysis and machine intelligence",
+        "ieee transactions on neural networks and learning systems",
+        "neurips",
+        "cvpr",
+        "iccv",
+        "eccv",
+        "icml",
+        "iclr",
+        "acm computing surveys",
+        "artificial intelligence",
+        "pattern recognition",
+        "neural networks",
+        "ieee transactions on image processing",
+        "computer vision and image understanding",
+        "machine learning",
+        "journal of machine learning research",
+    ],
+}
+
+# Keyword-based field detection (fallback when venue doesn't match)
 FIELD_INDICATORS = {
     "planetary_science": [
         "mars", "martian", "crater", "mineral", "geology", "atmosphere",
         "regolith", "dust", "olivine", "basalt", "phyllosilicate",
         "habitability", "astrobiology", "meteorite", "volcanism",
+        "jezero", "gale crater", "arcadia", "olympus",
     ],
     "satellite": [
         "orbiter", "satellite", "remote sensing", "hirise", "crism",
         "themis", "mro", "maven", "spacecraft", "lander", "rover",
         "perseverance", "curiosity", "zhurong", "tianwen", "ingenuity",
+        "sharad", "mola", "insight",
     ],
     "computer_science": [
         "machine learning", "deep learning", "neural network", "cnn",
@@ -29,8 +88,22 @@ FIELD_INDICATORS = {
 }
 
 
-def _detect_fields(paper: dict) -> list[str]:
-    """Detect which fields a paper belongs to based on content."""
+def _detect_fields_by_venue(venue: str) -> list[str]:
+    """Detect fields based on publication venue."""
+    if not venue:
+        return []
+    venue_lower = venue.lower().strip()
+    detected = []
+    for field, venues in VENUE_FIELDS.items():
+        for v in venues:
+            if v in venue_lower or venue_lower in v:
+                detected.append(field)
+                break
+    return detected
+
+
+def _detect_fields_by_keywords(paper: dict) -> list[str]:
+    """Detect fields based on title/abstract keywords."""
     text = f"{paper.get('title', '')} {paper.get('abstract', '')}".lower()
     detected = []
     for field, indicators in FIELD_INDICATORS.items():
@@ -41,9 +114,23 @@ def _detect_fields(paper: dict) -> list[str]:
     return detected
 
 
+def _detect_fields(paper: dict) -> list[str]:
+    """Detect fields: venue-based first, then keyword-based fallback."""
+    venue = paper.get("venue", "")
+    venue_fields = _detect_fields_by_venue(venue)
+    keyword_fields = _detect_fields_by_keywords(paper)
+
+    # Merge: venue fields take priority, add keyword fields not already present
+    all_fields = list(venue_fields)
+    for f in keyword_fields:
+        if f not in all_fields:
+            all_fields.append(f)
+
+    return all_fields
+
+
 def analyze_crossfield(papers: list[dict]) -> dict:
     """Analyze intersection of fields across papers."""
-    # Re-tag all papers by content
     field_papers = defaultdict(list)
     multi_field_papers = []
     field_combos = Counter()
@@ -68,16 +155,13 @@ def analyze_crossfield(papers: list[dict]) -> dict:
             combo = tuple(sorted(fields))
             field_combos[combo] += 1
 
-    # Sort multi-field papers by citations
     multi_field_papers.sort(key=lambda x: x["citations"] or 0, reverse=True)
 
-    # Find the triple intersection (all 3 fields)
     triple_intersection = [
         p for p in multi_field_papers
         if len(p["fields"]) == 3
     ]
 
-    # Pairwise intersections
     pairwise = {}
     pairs = [
         ("planetary_science", "computer_science"),
