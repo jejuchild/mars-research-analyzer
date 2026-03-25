@@ -125,7 +125,7 @@ footer {
 <header>
     <h1>Mars Research Analysis Report</h1>
     <p class="subtitle">화성탐사 × 인공위성 × 컴퓨터과학 융합연구 트렌드 분석 (2023-2026)</p>
-    <p class="subtitle">Generated: 2026-03-25 16:19</p>
+    <p class="subtitle">Generated: 2026-03-25 16:44</p>
 </header>
 
 <div class="container">
@@ -1166,14 +1166,14 @@ footer {
         <tr>
             <td><strong>significant challenges</strong></td>
             <td>64</td>
-            <td>challenge, limitation, need</td>
+            <td>limitation, challenge, need</td>
             <td>13.8</td>
         </tr>
         
         <tr>
             <td><strong>remains unclear</strong></td>
             <td>41</td>
-            <td>challenge, open_question, knowledge_gap</td>
+            <td>open_question, challenge, knowledge_gap</td>
             <td>52.0</td>
         </tr>
         
@@ -1187,7 +1187,7 @@ footer {
         <tr>
             <td><strong>significant challenge</strong></td>
             <td>33</td>
-            <td>challenge, limitation, need</td>
+            <td>limitation, challenge, need</td>
             <td>14.8</td>
         </tr>
         
@@ -1208,7 +1208,7 @@ footer {
         <tr>
             <td><strong>future research</strong></td>
             <td>29</td>
-            <td>challenge, need, knowledge_gap, future_work</td>
+            <td>future_work, challenge, need, knowledge_gap</td>
             <td>55.6</td>
         </tr>
         
@@ -1222,7 +1222,7 @@ footer {
         <tr>
             <td><strong>earth orbit</strong></td>
             <td>29</td>
-            <td>challenge, limitation, need</td>
+            <td>limitation, challenge, need</td>
             <td>0.0</td>
         </tr>
         
@@ -1731,14 +1731,34 @@ document.addEventListener('DOMContentLoaded', function() {
 // Yearly papers chart
 
 Plotly.newPlot('chart-yearly', [{
-    x: [2023, 2024, 2025, 2026],
-    y: [3668, 2755, 1655, 250],
+    x: [
+  2023,
+  2024,
+  2025,
+  2026
+],
+    y: [
+  3668,
+  2755,
+  1655,
+  250
+],
     type: 'bar',
     marker: { color: '#2a5298' },
     name: 'Papers'
 }, {
-    x: [2023, 2024, 2025, 2026],
-    y: [35.6, 17.4, 3.8, 0.1],
+    x: [
+  2023,
+  2024,
+  2025,
+  2026
+],
+    y: [
+  35.6,
+  17.4,
+  3.8,
+  0.1
+],
     type: 'scatter',
     mode: 'lines+markers',
     yaxis: 'y2',
@@ -1761,29 +1781,29 @@ Plotly.newPlot('chart-yearly', [{
 (function() {
     var fields = new Set();
     var data = {
-  &#34;2023&#34;: {
-    &#34;computer_science&#34;: 1244,
-    &#34;planetary_science&#34;: 1164,
-    &#34;satellite&#34;: 788,
-    &#34;cross_field&#34;: 472
+  "2023": {
+    "computer_science": 1244,
+    "planetary_science": 1164,
+    "satellite": 788,
+    "cross_field": 472
   },
-  &#34;2024&#34;: {
-    &#34;planetary_science&#34;: 914,
-    &#34;computer_science&#34;: 823,
-    &#34;satellite&#34;: 591,
-    &#34;cross_field&#34;: 427
+  "2024": {
+    "planetary_science": 914,
+    "computer_science": 823,
+    "satellite": 591,
+    "cross_field": 427
   },
-  &#34;2025&#34;: {
-    &#34;planetary_science&#34;: 584,
-    &#34;satellite&#34;: 422,
-    &#34;computer_science&#34;: 403,
-    &#34;cross_field&#34;: 246
+  "2025": {
+    "planetary_science": 584,
+    "satellite": 422,
+    "computer_science": 403,
+    "cross_field": 246
   },
-  &#34;2026&#34;: {
-    &#34;satellite&#34;: 111,
-    &#34;planetary_science&#34;: 70,
-    &#34;cross_field&#34;: 39,
-    &#34;computer_science&#34;: 30
+  "2026": {
+    "satellite": 111,
+    "planetary_science": 70,
+    "cross_field": 39,
+    "computer_science": 30
   }
 };
     Object.values(data).forEach(function(d) { Object.keys(d).forEach(function(k) { fields.add(k); }); });
@@ -1816,203 +1836,203 @@ Plotly.newPlot('chart-yearly', [{
 (function() {
     var kws = [
   [
-    &#34;machine learning&#34;,
+    "machine learning",
     1594
   ],
   [
-    &#34;sub sub&#34;,
+    "sub sub",
     1140
   ],
   [
-    &#34;deep learning&#34;,
+    "deep learning",
     869
   ],
   [
-    &#34;mml mml&#34;,
+    "mml mml",
     827
   ],
   [
-    &#34;sup sup&#34;,
+    "sup sup",
     793
   ],
   [
-    &#34;artificial intelligence&#34;,
+    "artificial intelligence",
     761
   ],
   [
-    &#34;solar wind&#34;,
+    "solar wind",
     756
   ],
   [
-    &#34;remote sensing&#34;,
+    "remote sensing",
     656
   ],
   [
-    &#34;space exploration&#34;,
+    "space exploration",
     593
   ],
   [
-    &#34;neural network&#34;,
+    "neural network",
     581
   ],
   [
-    &#34;real time&#34;,
+    "real time",
     570
   ],
   [
-    &#34;magnetic field&#34;,
+    "magnetic field",
     545
   ],
   [
-    &#34;http www&#34;,
+    "http www",
     476
   ],
   [
-    &#34;www org&#34;,
+    "www org",
     461
   ],
   [
-    &#34;neural networks&#34;,
+    "neural networks",
     456
   ],
   [
-    &#34;deep space&#34;,
+    "deep space",
     438
   ],
   [
-    &#34;solar system&#34;,
+    "solar system",
     426
   ],
   [
-    &#34;mml mrow&#34;,
+    "mml mrow",
     418
   ],
   [
-    &#34;mrow mml&#34;,
+    "mrow mml",
     418
   ],
   [
-    &#34;high resolution&#34;,
+    "high resolution",
     414
   ],
   [
-    &#34;state art&#34;,
+    "state art",
     384
   ],
   [
-    &#34;martian atmosphere&#34;,
+    "martian atmosphere",
     371
   ],
   [
-    &#34;learning models&#34;,
+    "learning models",
     364
   ],
   [
-    &#34;long term&#34;,
+    "long term",
     340
   ],
   [
-    &#34;martian surface&#34;,
+    "martian surface",
     333
   ],
   [
-    &#34;org math&#34;,
+    "org math",
     299
   ],
   [
-    &#34;math mathml&#34;,
+    "math mathml",
     299
   ],
   [
-    &#34;large scale&#34;,
+    "large scale",
     294
   ],
   [
-    &#34;xmlns mml&#34;,
+    "xmlns mml",
     294
   ],
   [
-    &#34;mml http&#34;,
+    "mml http",
     294
   ],
   [
-    &#34;random forest&#34;,
+    "random forest",
     287
   ],
   [
-    &#34;decision making&#34;,
+    "decision making",
     278
   ],
   [
-    &#34;mml math&#34;,
+    "mml math",
     274
   ],
   [
-    &#34;mars atmosphere&#34;,
+    "mars atmosphere",
     268
   ],
   [
-    &#34;convolutional neural&#34;,
+    "convolutional neural",
     267
   ],
   [
-    &#34;mars exploration&#34;,
+    "mars exploration",
     266
   ],
   [
-    &#34;jezero crater&#34;,
+    "jezero crater",
     258
   ],
   [
-    &#34;space missions&#34;,
+    "space missions",
     257
   ],
   [
-    &#34;climate change&#34;,
+    "climate change",
     251
   ],
   [
-    &#34;water ice&#34;,
+    "water ice",
     249
   ],
   [
-    &#34;earth mars&#34;,
+    "earth mars",
     242
   ],
   [
-    &#34;learning algorithms&#34;,
+    "learning algorithms",
     235
   ],
   [
-    &#34;support vector&#34;,
+    "support vector",
     230
   ],
   [
-    &#34;moon mars&#34;,
+    "moon mars",
     218
   ],
   [
-    &#34;volatile evolution&#34;,
+    "volatile evolution",
     214
   ],
   [
-    &#34;mars rover&#34;,
+    "mars rover",
     205
   ],
   [
-    &#34;perseverance rover&#34;,
+    "perseverance rover",
     205
   ],
   [
-    &#34;atmosphere volatile&#34;,
+    "atmosphere volatile",
     204
   ],
   [
-    &#34;real world&#34;,
+    "real world",
     197
   ],
   [
-    &#34;learning techniques&#34;,
+    "learning techniques",
     189
   ]
 ];
@@ -2037,8 +2057,16 @@ Plotly.newPlot('chart-yearly', [{
 // Cross-field chart
 
 Plotly.newPlot('chart-crossfield', [{
-    labels: ["satellite", "computer_science", "planetary_science"],
-    values: [2470, 2982, 4113],
+    labels: [
+  "satellite",
+  "computer_science",
+  "planetary_science"
+],
+    values: [
+  2470,
+  2982,
+  4113
+],
     type: 'pie',
     hole: 0.4,
     marker: { colors: ['#2196F3', '#4CAF50', '#FF9800'] }
@@ -2053,8 +2081,22 @@ Plotly.newPlot('chart-crossfield', [{
 // Gaps chart
 
 Plotly.newPlot('chart-gaps', [{
-    labels: ["challenge", "need", "knowledge_gap", "open_question", "limitation", "future_work"],
-    values: [403, 594, 113, 76, 251, 70],
+    labels: [
+  "challenge",
+  "need",
+  "knowledge_gap",
+  "open_question",
+  "limitation",
+  "future_work"
+],
+    values: [
+  403,
+  594,
+  113,
+  76,
+  251,
+  70
+],
     type: 'pie',
     marker: { colors: ['#d32f2f', '#e65100', '#1565c0', '#7b1fa2', '#00838f', '#2e7d32'] }
 }], {

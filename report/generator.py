@@ -6,6 +6,7 @@ from datetime import datetime
 from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader
+from markupsafe import Markup
 
 from config import REPORT_DIR
 
@@ -14,13 +15,18 @@ logger = logging.getLogger(__name__)
 TEMPLATE_DIR = Path(__file__).parent / "templates"
 
 
+def _tojson_safe(x):
+    """JSON dump that is safe inside <script> tags (not HTML-escaped)."""
+    return Markup(json.dumps(x, indent=2, ensure_ascii=False, default=str))
+
+
 def generate_report(analysis_results: dict, output_name: str = None) -> Path:
     """Generate HTML report from analysis results."""
     env = Environment(
         loader=FileSystemLoader(str(TEMPLATE_DIR)),
         autoescape=True,
     )
-    env.filters["tojson_pretty"] = lambda x: json.dumps(x, indent=2, ensure_ascii=False, default=str)
+    env.filters["tojson_pretty"] = _tojson_safe
 
     template = env.get_template("report.html")
 

@@ -392,14 +392,14 @@ document.addEventListener('DOMContentLoaded', function() {
 // Yearly papers chart
 {% if trends.yearly_papers %}
 Plotly.newPlot('chart-yearly', [{
-    x: {{ trends.yearly_papers.keys() | list | tojson }},
-    y: {{ trends.yearly_papers.values() | list | tojson }},
+    x: {{ trends.yearly_papers.keys() | list | tojson_pretty }},
+    y: {{ trends.yearly_papers.values() | list | tojson_pretty }},
     type: 'bar',
     marker: { color: '#2a5298' },
     name: 'Papers'
 }, {
-    x: {{ trends.yearly_citations.keys() | list | tojson }},
-    y: {{ trends.yearly_avg_citations.values() | list | tojson }},
+    x: {{ trends.yearly_citations.keys() | list | tojson_pretty }},
+    y: {{ trends.yearly_avg_citations.values() | list | tojson_pretty }},
     type: 'scatter',
     mode: 'lines+markers',
     yaxis: 'y2',
@@ -472,8 +472,8 @@ Plotly.newPlot('chart-yearly', [{
 // Cross-field chart
 {% if crossfield.field_counts %}
 Plotly.newPlot('chart-crossfield', [{
-    labels: {{ crossfield.field_counts.keys() | list | tojson }},
-    values: {{ crossfield.field_counts.values() | list | tojson }},
+    labels: {{ crossfield.field_counts.keys() | list | tojson_pretty }},
+    values: {{ crossfield.field_counts.values() | list | tojson_pretty }},
     type: 'pie',
     hole: 0.4,
     marker: { colors: ['#2196F3', '#4CAF50', '#FF9800'] }
@@ -488,8 +488,8 @@ Plotly.newPlot('chart-crossfield', [{
 // Gaps chart
 {% if gaps.gap_type_counts %}
 Plotly.newPlot('chart-gaps', [{
-    labels: {{ gaps.gap_type_counts.keys() | list | tojson }},
-    values: {{ gaps.gap_type_counts.values() | list | tojson }},
+    labels: {{ gaps.gap_type_counts.keys() | list | tojson_pretty }},
+    values: {{ gaps.gap_type_counts.values() | list | tojson_pretty }},
     type: 'pie',
     marker: { colors: ['#d32f2f', '#e65100', '#1565c0', '#7b1fa2', '#00838f', '#2e7d32'] }
 }], {
