@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mars Research Analysis Report</title>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Segoe UI', -apple-system, sans-serif;
+    background: #0a0a0f;
+    color: #e0e0e0;
+    line-height: 1.6;
+}
+.container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    padding: 40px 20px;
+    text-align: center;
+    border-bottom: 2px solid #e94560;
+}
+header h1 { font-size: 2.2em; color: #e94560; margin-bottom: 10px; }
+header .subtitle { color: #a0a0b0; font-size: 1.1em; }
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin: 30px 0;
+}
+.stat-card {
+    background: #1a1a2e;
+    border: 1px solid #2a2a4e;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+}
+.stat-card .number { font-size: 2.5em; font-weight: bold; color: #e94560; }
+.stat-card .label { color: #8888aa; font-size: 0.9em; margin-top: 5px; }
+section {
+    background: #12121e;
+    border: 1px solid #2a2a4e;
+    border-radius: 12px;
+    margin: 25px 0;
+    padding: 30px;
+}
+section h2 {
+    color: #e94560;
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #2a2a4e;
+}
+section h3 { color: #c0c0d0; margin: 15px 0 10px; }
+.chart { width: 100%; min-height: 400px; margin: 15px 0; }
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+}
+th, td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid #2a2a4e;
+}
+th { background: #1a1a2e; color: #e94560; font-weight: 600; }
+tr:hover { background: #1a1a2e; }
+.tag {
+    display: inline-block;
+    background: #e94560;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    margin: 2px;
+}
+.tag.planetary { background: #2196F3; }
+.tag.satellite { background: #4CAF50; }
+.tag.cs { background: #FF9800; }
+.tag.cross { background: #9C27B0; }
+.gap-card {
+    background: #1a1a2e;
+    border-left: 3px solid #e94560;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 0 8px 8px 0;
+}
+.gap-card .context { font-style: italic; color: #b0b0c0; margin: 5px 0; }
+.gap-card .meta { font-size: 0.85em; color: #8888aa; }
+.gap-type-challenge { border-left-color: #f44336; }
+.gap-type-limitation { border-left-color: #ff9800; }
+.gap-type-future_work { border-left-color: #2196f3; }
+.gap-type-knowledge_gap { border-left-color: #9c27b0; }
+.gap-type-open_question { border-left-color: #00bcd4; }
+.gap-type-need { border-left-color: #4caf50; }
+.topic-card {
+    background: #1a1a2e;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 10px 0;
+}
+.topic-words { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+.topic-word {
+    background: #2a2a4e;
+    padding: 3px 10px;
+    border-radius: 15px;
+    font-size: 0.85em;
+}
+footer {
+    text-align: center;
+    padding: 30px;
+    color: #666;
+    border-top: 1px solid #2a2a4e;
+    margin-top: 40px;
+}
+</style>
+</head>
+<body>
+
+<header>
+    <h1>Mars Research Analysis Report</h1>
+    <p class="subtitle">화성탐사 × 인공위성 × 컴퓨터과학 융합연구 트렌드 분석 (2023-2026)</p>
+    <p class="subtitle">Generated: {{ generated_at }}</p>
+</header>
+
+<div class="container">
+
+<!-- Overview Stats -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="number">{{ summary.total_papers }}</div>
+        <div class="label">Total Papers</div>
+    </div>
+    <div class="stat-card">
+        <div class="number">{{ summary.papers_with_abstracts }}</div>
+        <div class="label">With Abstracts</div>
+    </div>
+    <div class="stat-card">
+        <div class="number">{{ summary.total_authors }}</div>
+        <div class="label">Unique Authors</div>
+    </div>
+    <div class="stat-card">
+        <div class="number">{{ summary.total_venues }}</div>
+        <div class="label">Venues</div>
+    </div>
+    <div class="stat-card">
+        <div class="number">{{ summary.crossfield_papers }}</div>
+        <div class="label">Cross-field Papers</div>
+    </div>
+    <div class="stat-card">
+        <div class="number">{{ summary.triple_intersection }}</div>
+        <div class="label">Triple Intersection</div>
+    </div>
+</div>
+
+<!-- Source Breakdown -->
+{% if summary.source_counts %}
+<section>
+    <h2>Data Sources</h2>
+    <div class="stats-grid">
+        {% for source, count in summary.source_counts.items() %}
+        <div class="stat-card">
+            <div class="number">{{ count }}</div>
+            <div class="label">{{ source }}</div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- Publication Trends -->
+<section>
+    <h2>Publication Trends</h2>
+    <div id="chart-yearly" class="chart"></div>
+    <div id="chart-fields" class="chart"></div>
+
+    {% if trends.growth_rates %}
+    <h3>Growth Rates</h3>
+    <table>
+        <tr><th>Year</th><th>Papers</th><th>Growth</th><th>Avg Citations</th></tr>
+        {% for year, count in trends.yearly_papers.items() %}
+        <tr>
+            <td>{{ year }}</td>
+            <td>{{ count }}</td>
+            <td>{% if trends.growth_rates.get(year) is not none %}{{ trends.growth_rates[year] }}%{% else %}-{% endif %}</td>
+            <td>{{ trends.yearly_avg_citations.get(year, 0) }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+</section>
+
+<!-- Emerging Topics -->
+{% if emerging_topics %}
+<section>
+    <h2>Emerging Topics (Growing in 2025-2026)</h2>
+    <table>
+        <tr><th>Term</th><th>Recent Count</th><th>Earlier Count</th><th>Growth</th></tr>
+        {% for topic in emerging_topics[:20] %}
+        <tr>
+            <td><strong>{{ topic.term }}</strong></td>
+            <td>{{ topic.recent_freq }}</td>
+            <td>{{ topic.early_freq }}</td>
+            <td>{{ topic.growth_ratio }}{% if topic.growth_ratio != "new" %}x{% endif %}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</section>
+{% endif %}
+
+<!-- Topic Modeling -->
+<section>
+    <h2>Topic Clusters</h2>
+    <p>Method: {{ topics.method }} | Topics found: {{ topics.n_topics }}</p>
+    {% if topics.topics %}
+    {% for tid, topic in topics.topics.items() %}
+    <div class="topic-card">
+        <strong>Topic {{ tid }}</strong> ({{ topic.count }} papers)
+        <div class="topic-words">
+            {% for word, score in topic.words[:8] %}
+            <span class="topic-word">{{ word }}</span>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+</section>
+
+<!-- Keywords -->
+<section>
+    <h2>Top Keywords</h2>
+    <div id="chart-keywords" class="chart"></div>
+
+    <h3>Top Bigrams</h3>
+    <table>
+        <tr><th>#</th><th>Keyword</th><th>Frequency</th></tr>
+        {% for kw, count in keywords.bigrams[:25] %}
+        <tr><td>{{ loop.index }}</td><td>{{ kw }}</td><td>{{ count }}</td></tr>
+        {% endfor %}
+    </table>
+
+    {% if field_keywords %}
+    <h3>Keywords by Field</h3>
+    {% for field, kws in field_keywords.items() %}
+    <h4 style="margin-top:15px; color:#8888cc;">{{ field }}</h4>
+    <div class="topic-words">
+        {% for kw, count in kws[:15] %}
+        <span class="topic-word">{{ kw }} ({{ count }})</span>
+        {% endfor %}
+    </div>
+    {% endfor %}
+    {% endif %}
+</section>
+
+<!-- Cross-field Analysis -->
+<section>
+    <h2>Cross-field Intersection Analysis</h2>
+    <div id="chart-crossfield" class="chart"></div>
+
+    {% if crossfield.field_combinations %}
+    <h3>Field Combinations</h3>
+    <table>
+        <tr><th>Combination</th><th>Papers</th></tr>
+        {% for combo, count in crossfield.field_combinations.items() %}
+        <tr><td>{{ combo }}</td><td>{{ count }}</td></tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+    {% if crossfield.triple_intersection_papers %}
+    <h3>Triple Intersection Papers (Planetary × Satellite × CS)</h3>
+    <table>
+        <tr><th>Title</th><th>Year</th><th>Citations</th><th>Venue</th></tr>
+        {% for p in crossfield.triple_intersection_papers[:15] %}
+        <tr>
+            <td>{{ p.title }}</td>
+            <td>{{ p.year }}</td>
+            <td>{{ p.citations }}</td>
+            <td>{{ p.venue }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+    {% if crossfield.top_crossfield_papers %}
+    <h3>Top Cross-field Papers (by citations)</h3>
+    <table>
+        <tr><th>Title</th><th>Year</th><th>Fields</th><th>Citations</th></tr>
+        {% for p in crossfield.top_crossfield_papers[:15] %}
+        <tr>
+            <td>{{ p.title }}</td>
+            <td>{{ p.year }}</td>
+            <td>
+                {% for f in p.fields %}
+                <span class="tag {% if f == 'planetary_science' %}planetary{% elif f == 'satellite' %}satellite{% elif f == 'computer_science' %}cs{% else %}cross{% endif %}">{{ f }}</span>
+                {% endfor %}
+            </td>
+            <td>{{ p.citations }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+</section>
+
+<!-- Research Gaps -->
+<section>
+    <h2>Research Gaps & Open Problems</h2>
+    <p>{{ gaps.papers_with_gaps }} / {{ gaps.total_papers_analyzed }} papers mention challenges or gaps</p>
+
+    <div id="chart-gaps" class="chart"></div>
+
+    {% if gaps.gap_themes %}
+    <h3>Key Gap Themes</h3>
+    <table>
+        <tr><th>Theme</th><th>Mentions</th><th>Gap Types</th><th>Avg Citations</th></tr>
+        {% for theme in gaps.gap_themes[:15] %}
+        <tr>
+            <td><strong>{{ theme.theme }}</strong></td>
+            <td>{{ theme.mention_count }}</td>
+            <td>{{ theme.gap_types | join(', ') }}</td>
+            <td>{{ theme.avg_citations }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+    {% for gap_type, instances in gaps.gap_instances.items() %}
+    <h3 style="margin-top: 25px;">{{ gap_type | replace('_', ' ') | title }}</h3>
+    {% for inst in instances[:5] %}
+    <div class="gap-card gap-type-{{ gap_type }}">
+        <strong>{{ inst.paper_title }}</strong>
+        <div class="context">"{{ inst.context }}"</div>
+        <div class="meta">Year: {{ inst.year }} | Citations: {{ inst.citations }} | DOI: {{ inst.doi }}</div>
+    </div>
+    {% endfor %}
+    {% endfor %}
+</section>
+
+<!-- Top Venues -->
+<section>
+    <h2>Top Venues / Journals</h2>
+    <table>
+        <tr><th>#</th><th>Venue</th><th>Papers</th><th>Total Citations</th><th>Avg Citations</th></tr>
+        {% for v in venues.top_venues[:20] %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ v.name }}</td>
+            <td>{{ v.paper_count }}</td>
+            <td>{{ v.total_citations }}</td>
+            <td>{{ v.avg_citations }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</section>
+
+<!-- Top Authors -->
+<section>
+    <h2>Top Authors</h2>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div>
+            <h3>By Paper Count</h3>
+            <table>
+                <tr><th>#</th><th>Author</th><th>Papers</th></tr>
+                {% for a in authors.top_authors_by_count[:15] %}
+                <tr><td>{{ loop.index }}</td><td>{{ a.name }}</td><td>{{ a.paper_count }}</td></tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div>
+            <h3>By Total Citations</h3>
+            <table>
+                <tr><th>#</th><th>Author</th><th>Citations</th></tr>
+                {% for a in authors.top_authors_by_citation[:15] %}
+                <tr><td>{{ loop.index }}</td><td>{{ a.name }}</td><td>{{ a.total_citations }}</td></tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</section>
+
+</div>
+
+<!-- Charts Script -->
+<script>
+// Yearly papers chart
+{% if trends.yearly_papers %}
+Plotly.newPlot('chart-yearly', [{
+    x: {{ trends.yearly_papers.keys() | list | tojson }},
+    y: {{ trends.yearly_papers.values() | list | tojson }},
+    type: 'bar',
+    marker: { color: '#e94560' },
+    name: 'Papers'
+}, {
+    x: {{ trends.yearly_citations.keys() | list | tojson }},
+    y: {{ trends.yearly_avg_citations.values() | list | tojson }},
+    type: 'scatter',
+    mode: 'lines+markers',
+    yaxis: 'y2',
+    marker: { color: '#2196F3' },
+    name: 'Avg Citations'
+}], {
+    paper_bgcolor: '#12121e', plot_bgcolor: '#12121e',
+    font: { color: '#e0e0e0' },
+    title: 'Papers per Year & Average Citations',
+    yaxis: { title: 'Paper Count', gridcolor: '#2a2a4e' },
+    yaxis2: { title: 'Avg Citations', overlaying: 'y', side: 'right', gridcolor: '#2a2a4e' },
+    xaxis: { gridcolor: '#2a2a4e' },
+    legend: { x: 0.01, y: 0.99 },
+    margin: { t: 40 }
+});
+{% endif %}
+
+// Field distribution chart
+{% if trends.yearly_field_distribution %}
+(function() {
+    var fields = new Set();
+    var data = {{ trends.yearly_field_distribution | tojson_pretty }};
+    Object.values(data).forEach(function(d) { Object.keys(d).forEach(function(k) { fields.add(k); }); });
+    var years = Object.keys(data).sort();
+    var traces = [];
+    var colors = { planetary_science: '#2196F3', satellite: '#4CAF50', computer_science: '#FF9800', cross_field: '#9C27B0' };
+    fields.forEach(function(f) {
+        traces.push({
+            x: years,
+            y: years.map(function(y) { return (data[y] || {})[f] || 0; }),
+            name: f,
+            type: 'bar',
+            marker: { color: colors[f] || '#888' }
+        });
+    });
+    Plotly.newPlot('chart-fields', traces, {
+        barmode: 'stack',
+        paper_bgcolor: '#12121e', plot_bgcolor: '#12121e',
+        font: { color: '#e0e0e0' },
+        title: 'Field Distribution by Year',
+        yaxis: { gridcolor: '#2a2a4e' },
+        xaxis: { gridcolor: '#2a2a4e' },
+        margin: { t: 40 }
+    });
+})();
+{% endif %}
+
+// Keywords chart
+{% if keywords.bigrams %}
+(function() {
+    var kws = {{ keywords.bigrams | tojson_pretty }};
+    var top20 = kws.slice(0, 20);
+    Plotly.newPlot('chart-keywords', [{
+        y: top20.map(function(k) { return k[0]; }).reverse(),
+        x: top20.map(function(k) { return k[1]; }).reverse(),
+        type: 'bar',
+        orientation: 'h',
+        marker: { color: '#e94560' }
+    }], {
+        paper_bgcolor: '#12121e', plot_bgcolor: '#12121e',
+        font: { color: '#e0e0e0' },
+        title: 'Top 20 Bigram Keywords',
+        xaxis: { gridcolor: '#2a2a4e' },
+        yaxis: { gridcolor: '#2a2a4e', automargin: true },
+        margin: { l: 200, t: 40 }
+    });
+})();
+{% endif %}
+
+// Cross-field chart
+{% if crossfield.field_counts %}
+Plotly.newPlot('chart-crossfield', [{
+    labels: {{ crossfield.field_counts.keys() | list | tojson }},
+    values: {{ crossfield.field_counts.values() | list | tojson }},
+    type: 'pie',
+    hole: 0.4,
+    marker: { colors: ['#2196F3', '#4CAF50', '#FF9800'] }
+}], {
+    paper_bgcolor: '#12121e', plot_bgcolor: '#12121e',
+    font: { color: '#e0e0e0' },
+    title: 'Papers by Field',
+    margin: { t: 40 }
+});
+{% endif %}
+
+// Gaps chart
+{% if gaps.gap_type_counts %}
+Plotly.newPlot('chart-gaps', [{
+    labels: {{ gaps.gap_type_counts.keys() | list | tojson }},
+    values: {{ gaps.gap_type_counts.values() | list | tojson }},
+    type: 'pie',
+    marker: { colors: ['#f44336', '#ff9800', '#2196f3', '#9c27b0', '#00bcd4', '#4caf50'] }
+}], {
+    paper_bgcolor: '#12121e', plot_bgcolor: '#12121e',
+    font: { color: '#e0e0e0' },
+    title: 'Research Gap Types',
+    margin: { t: 40 }
+});
+{% endif %}
+</script>
+
+<footer>
+    <p>Mars Research Analyzer | Auto-generated report</p>
+    <p>행성과학 × 인공위성 × 컴퓨터과학 융합연구 분석</p>
+</footer>
+
+</body>
+</html>
