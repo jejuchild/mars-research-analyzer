@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mars Research Analysis Report</title>
-<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
@@ -387,6 +387,8 @@ footer {
 
 <!-- Charts Script -->
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+
 // Yearly papers chart
 {% if trends.yearly_papers %}
 Plotly.newPlot('chart-yearly', [{
@@ -497,6 +499,8 @@ Plotly.newPlot('chart-gaps', [{
     margin: { t: 40 }
 });
 {% endif %}
+
+}); // end DOMContentLoaded
 </script>
 
 <footer>

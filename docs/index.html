@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mars Research Analysis Report</title>
-<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
@@ -125,7 +125,7 @@ footer {
 <header>
     <h1>Mars Research Analysis Report</h1>
     <p class="subtitle">화성탐사 × 인공위성 × 컴퓨터과학 융합연구 트렌드 분석 (2023-2026)</p>
-    <p class="subtitle">Generated: 2026-03-25 16:16</p>
+    <p class="subtitle">Generated: 2026-03-25 16:19</p>
 </header>
 
 <div class="container">
@@ -1173,7 +1173,7 @@ footer {
         <tr>
             <td><strong>remains unclear</strong></td>
             <td>41</td>
-            <td>challenge, knowledge_gap, open_question</td>
+            <td>challenge, open_question, knowledge_gap</td>
             <td>52.0</td>
         </tr>
         
@@ -1208,7 +1208,7 @@ footer {
         <tr>
             <td><strong>future research</strong></td>
             <td>29</td>
-            <td>challenge, knowledge_gap, future_work, need</td>
+            <td>challenge, need, knowledge_gap, future_work</td>
             <td>55.6</td>
         </tr>
         
@@ -1726,6 +1726,8 @@ footer {
 
 <!-- Charts Script -->
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+
 // Yearly papers chart
 
 Plotly.newPlot('chart-yearly', [{
@@ -2062,6 +2064,8 @@ Plotly.newPlot('chart-gaps', [{
     margin: { t: 40 }
 });
 
+
+}); // end DOMContentLoaded
 </script>
 
 <footer>
