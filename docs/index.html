@@ -9,19 +9,19 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
     font-family: 'Segoe UI', -apple-system, sans-serif;
-    background: #0a0a0f;
-    color: #e0e0e0;
-    line-height: 1.6;
+    background: #f5f7fa;
+    color: #1a1a2e;
+    line-height: 1.7;
 }
 .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
 header {
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-    padding: 40px 20px;
+    background: linear-gradient(135deg, #1e3a5f 0%, #2a5298 50%, #3b7dd8 100%);
+    padding: 45px 20px;
     text-align: center;
-    border-bottom: 2px solid #e94560;
+    border-bottom: 3px solid #2a5298;
 }
-header h1 { font-size: 2.2em; color: #e94560; margin-bottom: 10px; }
-header .subtitle { color: #a0a0b0; font-size: 1.1em; }
+header h1 { font-size: 2.2em; color: #ffffff; margin-bottom: 10px; }
+header .subtitle { color: #d0dff0; font-size: 1.1em; }
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -29,29 +29,31 @@ header .subtitle { color: #a0a0b0; font-size: 1.1em; }
     margin: 30px 0;
 }
 .stat-card {
-    background: #1a1a2e;
-    border: 1px solid #2a2a4e;
+    background: #ffffff;
+    border: 1px solid #d8dee6;
     border-radius: 12px;
     padding: 20px;
     text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
-.stat-card .number { font-size: 2.5em; font-weight: bold; color: #e94560; }
-.stat-card .label { color: #8888aa; font-size: 0.9em; margin-top: 5px; }
+.stat-card .number { font-size: 2.5em; font-weight: bold; color: #2a5298; }
+.stat-card .label { color: #5a6a7e; font-size: 0.9em; margin-top: 5px; }
 section {
-    background: #12121e;
-    border: 1px solid #2a2a4e;
+    background: #ffffff;
+    border: 1px solid #d8dee6;
     border-radius: 12px;
     margin: 25px 0;
     padding: 30px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 section h2 {
-    color: #e94560;
+    color: #1e3a5f;
     font-size: 1.5em;
     margin-bottom: 20px;
     padding-bottom: 10px;
-    border-bottom: 1px solid #2a2a4e;
+    border-bottom: 2px solid #e8ecf2;
 }
-section h3 { color: #c0c0d0; margin: 15px 0 10px; }
+section h3 { color: #2c3e50; margin: 15px 0 10px; }
 .chart { width: 100%; min-height: 400px; margin: 15px 0; }
 table {
     width: 100%;
@@ -61,47 +63,50 @@ table {
 th, td {
     padding: 10px 12px;
     text-align: left;
-    border-bottom: 1px solid #2a2a4e;
+    border-bottom: 1px solid #e8ecf2;
+    color: #2c3e50;
 }
-th { background: #1a1a2e; color: #e94560; font-weight: 600; }
-tr:hover { background: #1a1a2e; }
+th { background: #f0f4f8; color: #1e3a5f; font-weight: 600; }
+tr:hover { background: #f5f8fc; }
 .tag {
     display: inline-block;
-    background: #e94560;
     color: white;
     padding: 2px 8px;
     border-radius: 4px;
     font-size: 0.8em;
     margin: 2px;
+    background: #2a5298;
 }
-.tag.planetary { background: #2196F3; }
-.tag.satellite { background: #4CAF50; }
-.tag.cs { background: #FF9800; }
-.tag.cross { background: #9C27B0; }
+.tag.planetary { background: #1976D2; }
+.tag.satellite { background: #2E7D32; }
+.tag.cs { background: #E65100; }
+.tag.cross { background: #7B1FA2; }
 .gap-card {
-    background: #1a1a2e;
-    border-left: 3px solid #e94560;
+    background: #f8f9fb;
+    border-left: 4px solid #2a5298;
     padding: 15px;
     margin: 10px 0;
     border-radius: 0 8px 8px 0;
 }
-.gap-card .context { font-style: italic; color: #b0b0c0; margin: 5px 0; }
-.gap-card .meta { font-size: 0.85em; color: #8888aa; }
-.gap-type-challenge { border-left-color: #f44336; }
-.gap-type-limitation { border-left-color: #ff9800; }
-.gap-type-future_work { border-left-color: #2196f3; }
-.gap-type-knowledge_gap { border-left-color: #9c27b0; }
-.gap-type-open_question { border-left-color: #00bcd4; }
-.gap-type-need { border-left-color: #4caf50; }
+.gap-card .context { font-style: italic; color: #4a5568; margin: 5px 0; }
+.gap-card .meta { font-size: 0.85em; color: #718096; }
+.gap-type-challenge { border-left-color: #d32f2f; }
+.gap-type-limitation { border-left-color: #e65100; }
+.gap-type-future_work { border-left-color: #1565c0; }
+.gap-type-knowledge_gap { border-left-color: #7b1fa2; }
+.gap-type-open_question { border-left-color: #00838f; }
+.gap-type-need { border-left-color: #2e7d32; }
 .topic-card {
-    background: #1a1a2e;
+    background: #f8f9fb;
     border-radius: 8px;
     padding: 15px;
     margin: 10px 0;
+    border: 1px solid #e8ecf2;
 }
 .topic-words { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
 .topic-word {
-    background: #2a2a4e;
+    background: #e3eaf3;
+    color: #1e3a5f;
     padding: 3px 10px;
     border-radius: 15px;
     font-size: 0.85em;
@@ -109,8 +114,8 @@ tr:hover { background: #1a1a2e; }
 footer {
     text-align: center;
     padding: 30px;
-    color: #666;
-    border-top: 1px solid #2a2a4e;
+    color: #8899aa;
+    border-top: 1px solid #d8dee6;
     margin-top: 40px;
 }
 </style>
@@ -120,7 +125,7 @@ footer {
 <header>
     <h1>Mars Research Analysis Report</h1>
     <p class="subtitle">화성탐사 × 인공위성 × 컴퓨터과학 융합연구 트렌드 분석 (2023-2026)</p>
-    <p class="subtitle">Generated: 2026-03-25 16:03</p>
+    <p class="subtitle">Generated: 2026-03-25 16:16</p>
 </header>
 
 <div class="container">
@@ -665,7 +670,7 @@ footer {
     
     <h3>Keywords by Field</h3>
     
-    <h4 style="margin-top:15px; color:#8888cc;">cross_field</h4>
+    <h4 style="margin-top:15px; color:#2a5298;">cross_field</h4>
     <div class="topic-words">
         
         <span class="topic-word">machine learning (354)</span>
@@ -700,7 +705,7 @@ footer {
         
     </div>
     
-    <h4 style="margin-top:15px; color:#8888cc;">computer_science</h4>
+    <h4 style="margin-top:15px; color:#2a5298;">computer_science</h4>
     <div class="topic-words">
         
         <span class="topic-word">machine learning (858)</span>
@@ -735,7 +740,7 @@ footer {
         
     </div>
     
-    <h4 style="margin-top:15px; color:#8888cc;">satellite</h4>
+    <h4 style="margin-top:15px; color:#2a5298;">satellite</h4>
     <div class="topic-words">
         
         <span class="topic-word">solar wind (493)</span>
@@ -770,7 +775,7 @@ footer {
         
     </div>
     
-    <h4 style="margin-top:15px; color:#8888cc;">planetary_science</h4>
+    <h4 style="margin-top:15px; color:#2a5298;">planetary_science</h4>
     <div class="topic-words">
         
         <span class="topic-word">sub sub (709)</span>
@@ -1203,7 +1208,7 @@ footer {
         <tr>
             <td><strong>future research</strong></td>
             <td>29</td>
-            <td>challenge, future_work, knowledge_gap, need</td>
+            <td>challenge, knowledge_gap, future_work, need</td>
             <td>55.6</td>
         </tr>
         
@@ -1727,7 +1732,7 @@ Plotly.newPlot('chart-yearly', [{
     x: [2023, 2024, 2025, 2026],
     y: [3668, 2755, 1655, 250],
     type: 'bar',
-    marker: { color: '#e94560' },
+    marker: { color: '#2a5298' },
     name: 'Papers'
 }, {
     x: [2023, 2024, 2025, 2026],
@@ -1735,15 +1740,15 @@ Plotly.newPlot('chart-yearly', [{
     type: 'scatter',
     mode: 'lines+markers',
     yaxis: 'y2',
-    marker: { color: '#2196F3' },
+    marker: { color: '#d35400' },
     name: 'Avg Citations'
 }], {
-    paper_bgcolor: '#12121e', plot_bgcolor: '#12121e',
-    font: { color: '#e0e0e0' },
+    paper_bgcolor: '#ffffff', plot_bgcolor: '#ffffff',
+    font: { color: '#2c3e50' },
     title: 'Papers per Year & Average Citations',
-    yaxis: { title: 'Paper Count', gridcolor: '#2a2a4e' },
-    yaxis2: { title: 'Avg Citations', overlaying: 'y', side: 'right', gridcolor: '#2a2a4e' },
-    xaxis: { gridcolor: '#2a2a4e' },
+    yaxis: { title: 'Paper Count', gridcolor: '#e8ecf2' },
+    yaxis2: { title: 'Avg Citations', overlaying: 'y', side: 'right', gridcolor: '#e8ecf2' },
+    xaxis: { gridcolor: '#e8ecf2' },
     legend: { x: 0.01, y: 0.99 },
     margin: { t: 40 }
 });
@@ -1794,11 +1799,11 @@ Plotly.newPlot('chart-yearly', [{
     });
     Plotly.newPlot('chart-fields', traces, {
         barmode: 'stack',
-        paper_bgcolor: '#12121e', plot_bgcolor: '#12121e',
-        font: { color: '#e0e0e0' },
+        paper_bgcolor: '#ffffff', plot_bgcolor: '#ffffff',
+        font: { color: '#2c3e50' },
         title: 'Field Distribution by Year',
-        yaxis: { gridcolor: '#2a2a4e' },
-        xaxis: { gridcolor: '#2a2a4e' },
+        yaxis: { gridcolor: '#e8ecf2' },
+        xaxis: { gridcolor: '#e8ecf2' },
         margin: { t: 40 }
     });
 })();
@@ -2015,13 +2020,13 @@ Plotly.newPlot('chart-yearly', [{
         x: top20.map(function(k) { return k[1]; }).reverse(),
         type: 'bar',
         orientation: 'h',
-        marker: { color: '#e94560' }
+        marker: { color: '#2a5298' }
     }], {
-        paper_bgcolor: '#12121e', plot_bgcolor: '#12121e',
-        font: { color: '#e0e0e0' },
+        paper_bgcolor: '#ffffff', plot_bgcolor: '#ffffff',
+        font: { color: '#2c3e50' },
         title: 'Top 20 Bigram Keywords',
-        xaxis: { gridcolor: '#2a2a4e' },
-        yaxis: { gridcolor: '#2a2a4e', automargin: true },
+        xaxis: { gridcolor: '#e8ecf2' },
+        yaxis: { gridcolor: '#e8ecf2', automargin: true },
         margin: { l: 200, t: 40 }
     });
 })();
@@ -2036,8 +2041,8 @@ Plotly.newPlot('chart-crossfield', [{
     hole: 0.4,
     marker: { colors: ['#2196F3', '#4CAF50', '#FF9800'] }
 }], {
-    paper_bgcolor: '#12121e', plot_bgcolor: '#12121e',
-    font: { color: '#e0e0e0' },
+    paper_bgcolor: '#ffffff', plot_bgcolor: '#ffffff',
+    font: { color: '#2c3e50' },
     title: 'Papers by Field',
     margin: { t: 40 }
 });
@@ -2049,10 +2054,10 @@ Plotly.newPlot('chart-gaps', [{
     labels: ["challenge", "need", "knowledge_gap", "open_question", "limitation", "future_work"],
     values: [403, 594, 113, 76, 251, 70],
     type: 'pie',
-    marker: { colors: ['#f44336', '#ff9800', '#2196f3', '#9c27b0', '#00bcd4', '#4caf50'] }
+    marker: { colors: ['#d32f2f', '#e65100', '#1565c0', '#7b1fa2', '#00838f', '#2e7d32'] }
 }], {
-    paper_bgcolor: '#12121e', plot_bgcolor: '#12121e',
-    font: { color: '#e0e0e0' },
+    paper_bgcolor: '#ffffff', plot_bgcolor: '#ffffff',
+    font: { color: '#2c3e50' },
     title: 'Research Gap Types',
     margin: { t: 40 }
 });
