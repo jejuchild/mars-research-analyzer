@@ -381,7 +381,7 @@ footer {
         <tr><th>Title</th><th>Year</th><th>Citations</th><th>Venue</th></tr>
         {% for p in crossfield.triple_intersection_papers[:15] %}
         <tr>
-            <td><span class="paper-link" onclick="showPaper({{ p | tojson_pretty }})">{{ p.title }}</span></td>
+            <td><span class="paper-link" data-pid="tri_{{ loop.index0 }}">{{ p.title }}</span></td>
             <td>{{ p.year }}</td>
             <td>{{ p.citations }}</td>
             <td>{{ p.venue }}</td>
@@ -396,7 +396,7 @@ footer {
         <tr><th>Title</th><th>Year</th><th>Fields</th><th>Citations</th></tr>
         {% for p in crossfield.top_crossfield_papers[:15] %}
         <tr>
-            <td><span class="paper-link" onclick="showPaper({{ p | tojson_pretty }})">{{ p.title }}</span></td>
+            <td><span class="paper-link" data-pid="top_{{ loop.index0 }}">{{ p.title }}</span></td>
             <td>{{ p.year }}</td>
             <td>
                 {% for f in p.fields %}
@@ -436,7 +436,7 @@ footer {
     <h3 style="margin-top: 25px;">{{ gap_type | replace('_', ' ') | title }}</h3>
     {% for inst in instances[:5] %}
     <div class="gap-card gap-type-{{ gap_type }}">
-        <strong><span class="paper-link" onclick="showPaper({title: '{{ inst.paper_title | e }}', doi: '{{ inst.doi | e }}', year: {{ inst.year or 'null' }}, citations: {{ inst.citations or 0 }}, venue: '', abstract: {{ inst.abstract | default('', true) | tojson_pretty }}, fields: []})">{{ inst.paper_title }}</span></strong>
+        <strong><span class="paper-link" data-pid="gap_{{ gap_type }}_{{ loop.index0 }}">{{ inst.paper_title }}</span></strong>
         <div class="context">"{{ inst.context }}"</div>
         <div class="meta">Year: {{ inst.year }} | Citations: {{ inst.citations }} | DOI: {{ inst.doi }}</div>
     </div>
@@ -501,7 +501,43 @@ footer {
 
 <!-- Modal + Charts Script -->
 <script>
-// Paper modal functions (outside DOMContentLoaded so onclick can access them)
+// Paper data store — all clickable papers indexed by pid
+var _papers = {};
+
+// Triple intersection papers
+{% if crossfield.triple_intersection_papers %}
+(function() {
+    var data = {{ crossfield.triple_intersection_papers[:15] | tojson_pretty }};
+    data.forEach(function(p, i) { _papers['tri_' + i] = p; });
+})();
+{% endif %}
+
+// Top crossfield papers
+{% if crossfield.top_crossfield_papers %}
+(function() {
+    var data = {{ crossfield.top_crossfield_papers[:15] | tojson_pretty }};
+    data.forEach(function(p, i) { _papers['top_' + i] = p; });
+})();
+{% endif %}
+
+// Gap papers
+{% for gap_type, instances in gaps.gap_instances.items() %}
+(function() {
+    var data = {{ instances[:5] | tojson_pretty }};
+    data.forEach(function(inst, i) {
+        _papers['gap_{{ gap_type }}_' + i] = {
+            title: inst.paper_title,
+            doi: inst.doi,
+            year: inst.year,
+            citations: inst.citations,
+            venue: '',
+            abstract: inst.abstract || '',
+            fields: []
+        };
+    });
+})();
+{% endfor %}
+
 function showPaper(paper) {
     document.getElementById('modalTitle').textContent = paper.title || '';
 
@@ -518,8 +554,9 @@ function showPaper(paper) {
     }
 
     var absDiv = document.getElementById('modalAbstract');
-    if (paper.abstract && paper.abstract.length > 10) {
-        absDiv.innerHTML = '<div class="modal-abstract-label">Abstract</div><div class="modal-abstract">' + paper.abstract + '</div>';
+    var absText = (paper.abstract || '').replace(/<[^>]+>/g, '');
+    if (absText.length > 10) {
+        absDiv.innerHTML = '<div class="modal-abstract-label">Abstract</div><div class="modal-abstract">' + absText + '</div>';
     } else {
         absDiv.innerHTML = '<div class="modal-abstract" style="color:#8899aa;">No abstract available.</div>';
     }
@@ -528,7 +565,7 @@ function showPaper(paper) {
     links.innerHTML = '';
     if (paper.doi) {
         links.innerHTML += '<a class="btn-doi" href="https://doi.org/' + paper.doi + '" target="_blank">DOI Original</a>';
-        links.innerHTML += '<a class="btn-snu" href="https://libproxy.snu.ac.kr/link.n2s?url=https://doi.org/' + paper.doi + '" target="_blank">SNU Proxy</a>';
+        links.innerHTML += '<a class="btn-snu" href="https://libproxy.snu.ac.kr/link.n2s?url=https://doi.org/' + paper.doi + '" target="_blank">SNU Library</a>';
     }
     if (paper.title) {
         links.innerHTML += '<a class="btn-scholar" href="https://scholar.google.com/scholar?q=' + encodeURIComponent(paper.title) + '" target="_blank">Google Scholar</a>';
@@ -537,18 +574,29 @@ function showPaper(paper) {
     document.getElementById('paperModal').classList.add('active');
 }
 
+function showPaperById(pid) {
+    var paper = _papers[pid];
+    if (paper) showPaper(paper);
+}
+
 function closeModal() {
     document.getElementById('paperModal').classList.remove('active');
 }
 
-// Close on overlay click
 document.getElementById('paperModal').addEventListener('click', function(e) {
     if (e.target === this) closeModal();
 });
 
-// Close on Escape key
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') closeModal();
+});
+
+// Bind all paper-link clicks
+document.addEventListener('click', function(e) {
+    var el = e.target.closest('.paper-link');
+    if (el && el.dataset.pid) {
+        showPaperById(el.dataset.pid);
+    }
 });
 
 document.addEventListener('DOMContentLoaded', function() {
