@@ -486,6 +486,66 @@ footer {
     </div>
 </section>
 
+<!-- Research Recommendations -->
+{% if recommendations %}
+<section style="border: 2px solid #2a5298; background: linear-gradient(135deg, #f8f9fb 0%, #eef2f7 100%);">
+    <h2 style="color: #1e3a5f; font-size: 1.7em;">So What? — Trend Summary, Open Problems & Research Recommendations</h2>
+
+    {% if recommendations.trend_summary %}
+    <h3>Recent Trends</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin: 15px 0;">
+        {% for t in recommendations.trend_summary %}
+        <div style="background: white; border-radius: 10px; padding: 18px; border-left: 4px solid {% if t.trend == 'rising' %}#2e7d32{% elif t.trend == 'increasing' %}#1565c0{% else %}#5a6a7e{% endif %};">
+            <div style="font-weight: 700; color: #1e3a5f; margin-bottom: 6px;">{{ t.category }}</div>
+            <div style="color: #2c3e50; font-size: 0.95em;">{{ t.insight }}</div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if recommendations.open_problems %}
+    <h3 style="margin-top: 30px;">Unsolved Problems & Research Gaps</h3>
+    <p style="color: #5a6a7e; margin-bottom: 12px;">High-impact problems identified from paper abstracts — sorted by citation impact.</p>
+    <table>
+        <tr><th style="width:50%;">Problem / Gap</th><th>Evidence</th><th>Type</th><th>Impact</th></tr>
+        {% for p in recommendations.open_problems[:12] %}
+        <tr>
+            <td style="font-size: 0.92em;">{{ p.problem }}</td>
+            <td style="font-size: 0.85em; color: #5a6a7e;">{{ p.evidence }}</td>
+            <td>
+                {% for gt in p.gap_types %}
+                <span style="background: {% if gt == 'challenge' %}#ffebee{% elif gt == 'knowledge_gap' %}#f3e5f5{% elif gt == 'open_question' %}#e0f7fa{% else %}#e8f5e9{% endif %}; color: #333; padding: 2px 6px; border-radius: 4px; font-size: 0.8em;">{{ gt }}</span>
+                {% endfor %}
+            </td>
+            <td><strong>{{ p.avg_citations }}</strong></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+    {% if recommendations.recommendations %}
+    <h3 style="margin-top: 30px;">Recommended Research Topics for You</h3>
+    <p style="color: #5a6a7e; margin-bottom: 15px;">Based on emerging trends, research gaps, and cross-field opportunities.</p>
+
+    {% for r in recommendations.recommendations %}
+    <div style="background: white; border-radius: 12px; padding: 20px; margin: 12px 0; border-left: 5px solid {% if r.priority == 'high' %}#d32f2f{% else %}#f57c00{% endif %}; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+            <span style="background: {% if r.priority == 'high' %}#d32f2f{% else %}#f57c00{% endif %}; color: white; padding: 2px 10px; border-radius: 4px; font-size: 0.8em; font-weight: 600;">{{ r.priority | upper }}</span>
+            <span style="background: #e3eaf3; color: #1e3a5f; padding: 2px 10px; border-radius: 4px; font-size: 0.8em;">{{ r.type }}</span>
+        </div>
+        <div style="font-size: 1.15em; font-weight: 700; color: #1e3a5f; margin-bottom: 8px;">{{ r.title }}</div>
+        <div style="color: #2c3e50; line-height: 1.7; margin-bottom: 10px;">{{ r.rationale }}</div>
+        {% if r.target_venues %}
+        <div style="font-size: 0.85em; color: #5a6a7e;">
+            Target journals: {% for v in r.target_venues %}<span style="background: #f0f4f8; padding: 2px 8px; border-radius: 4px; margin: 2px;">{{ v }}</span>{% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+    {% endif %}
+</section>
+{% endif %}
+
 </div>
 
 <!-- Paper Detail Modal -->

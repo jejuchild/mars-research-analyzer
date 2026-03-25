@@ -25,6 +25,7 @@ from analyzer.network import analyze_authors, analyze_venues
 from analyzer.trends import analyze_trends, find_emerging_topics
 from analyzer.crossfield import analyze_crossfield
 from analyzer.gaps import detect_gaps
+from analyzer.recommendations import synthesize
 from report.generator import generate_report
 
 logging.basicConfig(
@@ -117,7 +118,7 @@ def analyze_papers(db: PaperDB) -> dict:
         "source_counts": db.count_by_source(),
     }
 
-    return {
+    results = {
         "summary": summary,
         "keywords": keywords,
         "field_keywords": field_keywords,
@@ -129,6 +130,11 @@ def analyze_papers(db: PaperDB) -> dict:
         "crossfield": crossfield,
         "gaps": gaps,
     }
+
+    logger.info("Generating research recommendations...")
+    results["recommendations"] = synthesize(results)
+
+    return results
 
 
 def download_pdfs(db: PaperDB, limit: int = 50):
