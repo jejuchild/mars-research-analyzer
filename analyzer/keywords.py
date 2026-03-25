@@ -26,11 +26,37 @@ STOP_WORDS = {
     "two", "one", "new", "first", "well", "also", "can", "may",
 }
 
+# Noise tokens to strip (MathML remnants, markup artifacts)
+NOISE_TOKENS = {
+    "mml", "mrow", "msup", "msub", "mtext", "mfrac", "xmlns", "mathml",
+    "http", "https", "www", "org", "com", "doi", "sub", "sup",
+    "alttext", "altimg", "mathvariant", "stretchy", "false", "true",
+    "crossref", "pdf", "html", "xml", "href", "xlink",
+}
+
+
+def clean_text(text: str) -> str:
+    """Clean text by removing HTML tags, MathML, URLs, and markup artifacts."""
+    # Remove HTML/XML tags (including MathML like <mml:mrow>, <sub>, <sup>)
+    text = re.sub(r'<[^>]+>', ' ', text)
+    # Remove URLs
+    text = re.sub(r'https?://\S+', ' ', text)
+    # Remove xmlns and namespace declarations
+    text = re.sub(r'xmlns[:\w]*="[^"]*"', ' ', text)
+    # Remove leftover XML/HTML entities
+    text = re.sub(r'&[a-z]+;', ' ', text)
+    # Remove standalone numbers and math symbols
+    text = re.sub(r'\b\d+\.?\d*\b', ' ', text)
+    # Collapse whitespace
+    text = re.sub(r'\s+', ' ', text).strip()
+    return text
+
 
 def extract_ngrams(text: str, n: int = 2) -> list[str]:
-    """Extract n-grams from text."""
+    """Extract n-grams from cleaned text."""
+    text = clean_text(text)
     words = re.findall(r'\b[a-z]{3,}\b', text.lower())
-    words = [w for w in words if w not in STOP_WORDS]
+    words = [w for w in words if w not in STOP_WORDS and w not in NOISE_TOKENS]
 
     if n == 1:
         return words
@@ -65,7 +91,6 @@ def analyze_keywords(papers: list[dict]) -> dict:
         bigram_counter.update(bigrams)
         trigram_counter.update(trigrams)
 
-        # Track by year
         if year:
             if year not in yearly_keywords:
                 yearly_keywords[year] = Counter()
